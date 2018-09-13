@@ -19,4 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('index', 'SendDailyEmail@index');
 Route::post('sendEmail', 'SendDailyEmail@sendEmail');
+Route::post('sendEmail2', 'SendDailyEmail@sendEmail2');
+Route::post('sendEmail3', 'SendDailyEmail@sendEmail3');
 Route::get('view', 'SendDailyEmail@view');

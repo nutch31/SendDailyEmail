@@ -101,6 +101,178 @@ class SendDailyEmail extends Controller
 
         return $content;
     }
+    
+    public function sendEmail2(Request $request)
+    {
+        //Config fileUrl, mimeType, Emails
+        $fileUrl    = $request['fileUrl'];
+        $mimeType   = $request['mimeType'];
+        $email_from = $request['email_from'];
+        $email      = $request['email'];
+        $email_cc   = $request['email_cc'];
+        $email_bcc  = $request['email_bcc'];
+        
+        //Find extension mimeType
+        $extension = $this->checkExtension($mimeType);
+
+        //Find Basename
+        $array          = explode('/d/', $fileUrl);
+        $array_basename = explode('/', $array[1]);
+        $basename       = $array_basename[0];
+
+        $service = Storage::cloud()->getAdapter()->getService();
+
+        $file = $service->files->get($basename);
+
+        $dir['name'] = $file->name;
+
+        $export = $service->files->export($basename, $mimeType, array(
+            'alt' => 'media'
+        ));
+
+        $contentFile = $export->getBody();
+
+        $data = [ 
+            'email_from' => $email_from,
+            'email' => $email,
+            'email_cc' => $email_cc,
+            'email_bcc' => $email_bcc,
+            'contentFile' => $contentFile,
+            'dirname' => $dir['name'],
+            'extension' => $extension
+        ];           
+        
+       Mail::send('emails.send_daily_email', $data, function ($message) use ($data)
+        { 
+            $message->from($data['email_from']); 
+            $message->to($data['email']); 
+            if(!empty($data['email_cc']))
+            {
+                 $message->cc($data['email_cc']);
+            } 
+            if(!empty($data['email_bcc']))
+            {
+                $message->bcc($data['email_bcc']); 
+            }
+            $message->subject('FYI : Daily Report Mail : '.$data['dirname'].'_'.date("Ymd").'.'.$data['extension']); 
+            $message->attachData($data['contentFile'], $data['dirname'].'_'.date("Ymd").'.'.$data['extension']);
+        });
+
+        if(count(Mail::failures()) > 0)
+        {
+            $content = 'Failed to send Email!';
+        }
+        else
+        {
+            $content = 'Success to send Email!';
+        }
+
+        $SendDailyEmail = new SendDailyEmailModel();
+
+        $email = json_encode($email);
+        $email_cc = json_encode($email_cc);
+        $email_bcc = json_encode($email_bcc);
+
+        $SendDailyEmail->file_url = $fileUrl;
+        $SendDailyEmail->mime_type = $mimeType;
+        $SendDailyEmail->extension = $extension;
+        $SendDailyEmail->content = $content;
+        $SendDailyEmail->status = 1;
+        $SendDailyEmail->email_from = $email_from;
+        $SendDailyEmail->email = $email;
+        $SendDailyEmail->email_cc = $email_cc;
+        $SendDailyEmail->email_bcc = $email_bcc;
+
+        $SendDailyEmail->save();
+
+        return $content;
+    }
+    
+    public function sendEmail3(Request $request)
+    {
+        //Config fileUrl, mimeType, Emails
+        $fileUrl    = $request['fileUrl'];
+        $mimeType   = $request['mimeType'];
+        $email_from = $request['email_from'];
+        $email      = $request['email'];
+        $email_cc   = $request['email_cc'];
+        $email_bcc  = $request['email_bcc'];
+        
+        //Find extension mimeType
+        $extension = $this->checkExtension($mimeType);
+
+        //Find Basename
+        $array          = explode('/d/', $fileUrl);
+        $array_basename = explode('/', $array[1]);
+        $basename       = $array_basename[0];
+
+        $service = Storage::cloud()->getAdapter()->getService();
+
+        $file = $service->files->get($basename);
+
+        $dir['name'] = $file->name;
+
+        $export = $service->files->export($basename, $mimeType, array(
+            'alt' => 'media'
+        ));
+
+        $contentFile = $export->getBody();
+
+        $data = [ 
+            'email_from' => $email_from,
+            'email' => $email,
+            'email_cc' => $email_cc,
+            'email_bcc' => $email_bcc,
+            'contentFile' => $contentFile,
+            'dirname' => $dir['name'],
+            'extension' => $extension
+        ];           
+        
+       Mail::send('emails.send_daily_email', $data, function ($message) use ($data)
+        { 
+            $message->from($data['email_from']); 
+            $message->to($data['email']); 
+            if(!empty($data['email_cc']))
+            {
+                 $message->cc($data['email_cc']);
+            } 
+            if(!empty($data['email_bcc']))
+            {
+                $message->bcc($data['email_bcc']); 
+            }
+            $message->subject('FYI : Daily Report Mail : '.$data['dirname'].'_'.date("Ymd").'.'.$data['extension']); 
+            $message->attachData($data['contentFile'], $data['dirname'].'_'.date("Ymd").'.'.$data['extension']);
+        });
+
+        if(count(Mail::failures()) > 0)
+        {
+            $content = 'Failed to send Email!';
+        }
+        else
+        {
+            $content = 'Success to send Email!';
+        }
+
+        $SendDailyEmail = new SendDailyEmailModel();
+
+        $email = json_encode($email);
+        $email_cc = json_encode($email_cc);
+        $email_bcc = json_encode($email_bcc);
+
+        $SendDailyEmail->file_url = $fileUrl;
+        $SendDailyEmail->mime_type = $mimeType;
+        $SendDailyEmail->extension = $extension;
+        $SendDailyEmail->content = $content;
+        $SendDailyEmail->status = 1;
+        $SendDailyEmail->email_from = $email_from;
+        $SendDailyEmail->email = $email;
+        $SendDailyEmail->email_cc = $email_cc;
+        $SendDailyEmail->email_bcc = $email_bcc;
+
+        $SendDailyEmail->save();
+
+        return $content;
+    }
 
     public function checkExtension($mimeType)
     {
