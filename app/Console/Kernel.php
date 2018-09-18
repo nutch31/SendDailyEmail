@@ -33,8 +33,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:SendDailyEmail2')        
         ->weeklyOn(2, '10:00');
 
-        $schedule->command('command:SendDailyEmail3')
-        ->weeklyOn(2, '10:00');
+        //$schedule->command('command:SendDailyEmail3')
+        //->weeklyOn(2, '10:00');
     }
 
     /**
