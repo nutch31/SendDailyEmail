@@ -49,7 +49,8 @@ class SendDailyEmail2 extends Command
             'email_from' => 'admin.th@heroleads.com',
             'email[0]' => 'misumi.th@heroleads.com',
             'email[1]' => 'misumi.sem@misumi.co.th',
-            'email[2]' => 'nut@heroleads.com'
+            'email[2]' => 'nut@heroleads.com',
+            'email[3]' => 'marketing.sbqw.03@misumi.co.th'
         );
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
